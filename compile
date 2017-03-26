@@ -1,0 +1,38 @@
+#!/bin/bash
+
+CODE="NOPE"
+COMPILE=1
+
+case $# in
+    0) echo "Parameters not recognized, type compile --help for help";;
+    1) COMPILE=0; CODE=$1;;
+    2) COMPILE=0;;
+    3) COMPILE=$1; FILE=$2; EXE=$3;;
+    *) echo "Parameters not recognized, type compile --help for help";;
+esac
+
+if [ $COMPILE = "0" ]
+then
+    if [ $CODE = "--help" ]
+    then
+	echo "Usage- type \`compile -c/-C <filename with extension> <executable name>'"
+    else
+	echo "Parameters not recognized, type compile --help for help"
+    fi
+
+elif [ $COMPILE = "-c" ]
+then
+    gcc -c $FILE -o temp.o
+    gcc temp.o -o $EXE
+    rm temp.o
+
+elif [ $COMPILE = "-C" ]
+then
+    g++ -c $FILE -o temp.o
+    g++ temp.o -o $EXE
+    rm temp.o
+
+elif [ $COMPILE != 1 ]
+then
+    echo "Parameters not recognized, type compile --help for help"
+fi
