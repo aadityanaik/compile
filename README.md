@@ -4,4 +4,4 @@ $ gcc -c <filename>.c -o <filename>.o
 $ gcc <filename>.o -o <executable name>
 
 Usage-
-For C or C++ source files: $ compile <filename with extension>
+For C or C++ source files: $ compile \<filename with extension\>
