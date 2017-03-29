@@ -6,24 +6,35 @@ case $# in
     *) echo "Parameters not recognized, type compile --help for help";;
 esac
 
-NAME=$(echo $FILE | cut -f1 -d '.')
+NAME=$(echo $FILE | cut -f1 -d '.')    #removes the extension using the cut command
 
 if [ "$FILE" = "--help" ]
 then
     echo "Usage- $ compile <filename with extension>"
     echo "Only for .c and .cpp files"
 
-elif [ "${FILE##*.}" = "c" ]
+elif [ "${FILE##*.}" = "c" ]    #extension is .c
 then
     gcc -c $FILE -o temp.o
-    gcc temp.o -o $NAME
-    rm temp.o
+    if [ "$?" = "0" ]    #compilation returns 0
+    then
+	gcc temp.o -o $NAME
+	rm temp.o
+    else
+	echo "Unsuccessful compilation"
+    fi
 
-elif [ "${FILE##*.}" = "cpp" ]
+elif [ "${FILE##*.}" = "cpp" ] || [ "${FILE##*.}" = "C" ]    #extension is .cpp or .C
 then
     g++ -c $FILE -o temp.o
-    g++ temp.o -o $NAME
-    rm temp.o
+    if [ "$?" = "0" ]    #compilation returns 0
+    then
+	g++ temp.o -o $NAME
+	rm temp.o
+    else
+	echo "Unsuccessful compilation"
+
+    fi
 
 else
     echo "Invalid file extension"
