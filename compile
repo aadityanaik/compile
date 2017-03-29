@@ -1,38 +1,31 @@
 #!/bin/bash
 
-CODE="NOPE"
-COMPILE=1
-
 case $# in
     0) echo "Parameters not recognized, type compile --help for help";;
-    1) COMPILE=0; CODE=$1;;
-    2) COMPILE=0;;
-    3) COMPILE=$1; FILE=$2; EXE=$3;;
+    1) FILE=$1;;
     *) echo "Parameters not recognized, type compile --help for help";;
 esac
 
-if [ $COMPILE = "0" ]
-then
-    if [ $CODE = "--help" ]
-    then
-	echo "Usage- type \`compile -c/-C <filename with extension> <executable name>'"
-    else
-	echo "Parameters not recognized, type compile --help for help"
-    fi
+NAME=$(echo $FILE | cut -f1 -d '.')
 
-elif [ $COMPILE = "-c" ]
+if [ "$FILE" = "--help" ]
+then
+    echo "Usage- $ compile <filename with extension>"
+    echo "Only for .c and .cpp files"
+
+elif [ "${FILE##*.}" = "c" ]
 then
     gcc -c $FILE -o temp.o
-    gcc temp.o -o $EXE
+    gcc temp.o -o $NAME
     rm temp.o
 
-elif [ $COMPILE = "-C" ]
+elif [ "${FILE##*.}" = "cpp" ]
 then
     g++ -c $FILE -o temp.o
-    g++ temp.o -o $EXE
+    g++ temp.o -o $NAME
     rm temp.o
 
-elif [ $COMPILE != 1 ]
-then
-    echo "Parameters not recognized, type compile --help for help"
+else
+    echo "Invalid file extension"
+
 fi
