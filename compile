@@ -36,7 +36,31 @@ then
 
     fi
 
+elif [ "$FILE" = "-m" ]    #compile a code with multiple source files
+then
+    
+    echo "Enter the executable name"
+    read EXENAME
+
+    if [ ! -d "o-files" ]    #create a directory for the object files to reside in if one does not exist already
+    then
+	mkdir o-files
+
+    fi
+
+    for i in `(ls *.cpp)`
+    do
+	g++ -c $i
+    done
+
+    mv *.o o-files
+    cd o-files
+
+    g++ `ls` -o $EXENAME
+
+    mv $EXENAME ..
+
 else
-    echo "Invalid file extension"
+    echo "Invalid parameters. Type 'compile --help'"
 
 fi
