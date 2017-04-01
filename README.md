@@ -5,3 +5,4 @@ $ gcc <filename>.o -o <executable name>
 
 Usage-
 For C or C++ source files: $ compile \<filename with extension\>
+For programs with multiple .cpp source files: $ compile -m
