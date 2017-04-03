@@ -1,9 +1,9 @@
 # compile
 A simple rudimentary bash script to compile single C and CPP source files as opposed to the normal
 
-$ gcc -c <filename>.c -o <filename>.o
+$ gcc -c \<filename\>.c -o \<filename\>.o
 
-$ gcc <filename>.o -o <executable name>
+$ gcc \<filename\>.o -o \<executable name\>
 
 
 
