@@ -3,6 +3,7 @@
 case $# in
     0) echo "Parameters not recognized, type compile --help for help";;
     1) FILE=$1;;
+    2) FILE=$1; EXE=$2;;
     *) echo "Parameters not recognized, type compile --help for help";;
 esac
 
@@ -39,9 +40,6 @@ then
 elif [ "$FILE" = "-m" ]    #compile a code with multiple source files
 then
     
-    echo "Enter the executable name"
-    read EXENAME
-
     if [ ! -d "o-files" ]    #create a directory for the object files to reside in if one does not exist already
     then
 	mkdir o-files
@@ -56,9 +54,9 @@ then
     mv *.o o-files
     cd o-files
 
-    g++ `ls` -o $EXENAME
+    g++ `ls` -o $EXE
 
-    mv $EXENAME ..
+    mv $EXE ..
 
 else
     echo "Invalid parameters. Type 'compile --help'"
