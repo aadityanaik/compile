@@ -39,11 +39,6 @@ then
 
 elif [ "$FILE" = "-m" ]    #compile a code with multiple source files
 then
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> 74a2cb923272baa9dbaa17186563089c0c6c9918
     if [ ! -d "o-files" ]    #create a directory for the object files to reside in if one does not exist already
     then
 	mkdir o-files
@@ -58,19 +53,12 @@ then
     mv *.o o-files
     cd o-files
 
-<<<<<<< HEAD
     if [ "$?" = "0" ]
     then
 	echo "Enter the executable name"
 	read EXENAME
 	g++ `ls` -o $EXENAME
 	mv $EXENAME ..
-=======
-    g++ `ls` -o $EXE
-
-    mv $EXE ..
->>>>>>> 74a2cb923272baa9dbaa17186563089c0c6c9918
-
     fi
     
 else
