@@ -7,7 +7,7 @@ case $# in
     *) echo "Parameters not recognized, type compile --help for help";;
 esac
 
-NAME=${FILE%.*}    #removes the extension using the cut command
+NAME=${FILE%.*}    #removes the extension using shell parameter expansion
 
 if [ "$FILE" = "--help" ]
 then
