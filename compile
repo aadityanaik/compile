@@ -8,6 +8,7 @@ case $# in
 esac
 
 NAME=${FILE%.*}    #removes the extension using shell parameter expansion
+<<<<<<< HEAD
 
 ###############################################################################
 
@@ -23,6 +24,8 @@ function listCPPFiles {
 }
 
 ###############################################################################
+=======
+>>>>>>> d81e89522eff1a3988532e3e70b6a1c243c95a50
 
 if [ "$FILE" = "--help" ]
 then
@@ -58,10 +61,18 @@ then
 
 elif [ "$FILE" = "-m" ]    #compile a code with multiple source files
 then
+<<<<<<< HEAD
   if [ ! -d "o-files" ]    #create a directory for the object files to reside in if one does not exist already
   then
 		mkdir o-files
   fi
+=======
+    if [ ! -d "o-files" ]    #create a directory for the object files to reside in if one does not exist already
+    then
+	mkdir o-files
+
+    fi
+>>>>>>> d81e89522eff1a3988532e3e70b6a1c243c95a50
 
   for i in $(listCPPFiles)
   do
@@ -75,6 +86,7 @@ then
 		fi
   done
 
+<<<<<<< HEAD
   mv *.o o-files
   cd o-files
 
@@ -86,6 +98,16 @@ then
 		mv $EXENAME ..
   fi
 
+=======
+    if [ "$?" = "0" ]
+    then
+	echo "Enter the executable name"
+	read EXENAME
+	g++ `ls` -o $EXENAME
+	mv $EXENAME ..
+    fi
+    
+>>>>>>> d81e89522eff1a3988532e3e70b6a1c243c95a50
 else
   echo "Invalid parameters. Type 'compile --help'"
 fi
