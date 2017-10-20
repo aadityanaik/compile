@@ -1,68 +1,91 @@
 #!/bin/bash
 
 case $# in
-    0) echo "Parameters not recognized, type compile --help for help";;
-    1) FILE=$1;;
-    *) echo "Parameters not recognized, type compile --help for help";;
+  0) echo "Parameters not recognized, type compile --help for help";;
+  1) FILE=$1;;
+  2) FILE=$1; EXE=$2;;
+  *) echo "Parameters not recognized, type compile --help for help";;
 esac
 
-NAME=${FILE%.*}    #removes the extension using the cut command
+NAME=${FILE%.*}    #removes the extension using shell parameter expansion
+
+###############################################################################
+
+#function to list all the paths of the subdirectory
+function listCPPFiles {
+	for i in $(find -type f)
+	do
+		if [ "${i##*.}" = "cpp" ]
+		then
+			echo "$i"
+		fi
+	done
+}
+
+###############################################################################
 
 if [ "$FILE" = "--help" ]
 then
-    echo "Usage- $ compile <filename with extension>"
-    echo "Only for .c and .cpp files"
+  echo "Usage for single source file-"
+	echo "$ compile <filename with extension>"
+  echo "Only for .c and .cpp files"
+	echo -e "\nFor multiple files even in nested directories-"
+	echo "$ compile -m"
+	echo "You'll then be prompted to enter the executable name once the compilation terminates successfully"
 
 elif [ "${FILE##*.}" = "c" ]    #extension is .c
 then
-    gcc -c $FILE -o temp.o
-    if [ "$?" = "0" ]    #compilation returns 0
-    then
-	gcc temp.o -o $NAME
-	rm temp.o
-    else
-	echo "Unsuccessful compilation"
-    fi
+  gcc -c -pedantic $FILE -o temp.o
+  if [ "$?" = "0" ]    #compilation returns 0
+  then
+	  gcc temp.o -o $NAME
+		rm temp.o
+  else
+		echo "Unsuccessful compilation"
+  fi
 
 elif [ "${FILE##*.}" = "cpp" ] || [ "${FILE##*.}" = "C" ]    #extension is .cpp or .C
 then
-    g++ -c $FILE -o temp.o
-    if [ "$?" = "0" ]    #compilation returns 0
-    then
-	g++ temp.o -o $NAME
-	rm temp.o
-    else
-	echo "Unsuccessful compilation"
-
-    fi
+  g++ -c -pedantic -std=c++11 $FILE -o temp.o
+  if [ "$?" = "0" ]    #compilation returns 0
+  then
+		g++ temp.o -o $NAME
+		rm temp.o
+  else
+		echo "Unsuccessful compilation"
+		exit 1
+  fi
 
 elif [ "$FILE" = "-m" ]    #compile a code with multiple source files
 then
+  if [ ! -d "o-files" ]    #create a directory for the object files to reside in if one does not exist already
+  then
+		mkdir o-files
+  fi
 
-    if [ ! -d "o-files" ]    #create a directory for the object files to reside in if one does not exist already
-    then
-	mkdir o-files
+  for i in $(listCPPFiles)
+  do
+		echo "compiling $i"
+		g++ -c -pedantic -std=c++11 $i
+		if [ "$?" != "0" ]
+		then
+			echo "Unsuccessful compilation"
+			exit 1
 
-    fi
+		fi
+  done
 
-    for i in `(ls *.cpp)`
-    do
-	g++ -c $i
-    done
+  mv *.o o-files
+  cd o-files
 
-    mv *.o o-files
-    cd o-files
+  if [ "$?" = "0" ]
+  then
+		echo "Enter the executable name"
+		read EXENAME
+		g++ `ls` -o $EXENAME
+		mv $EXENAME ..
+  fi
 
-    if [ "$?" = "0" ]
-    then
-	echo "Enter the executable name"
-	read EXENAME
-	g++ `ls` -o $EXENAME
-	mv $EXENAME ..
-
-    fi
-    
 else
-    echo "Invalid parameters. Type 'compile --help'"
-
+  echo "Invalid parameters. Type 'compile --help'"
 fi
