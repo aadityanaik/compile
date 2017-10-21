@@ -9,6 +9,9 @@ $ gcc \<filename\>.o -o \<executable name\>
 
 Usage-
 
-For C or C++ source files: $ compile \<filename with extension\>
+For C or C++ source files:<br/>
+$ compile \<filename with extension\>
 
-For programs with multiple .cpp source files: $ compile -m \<executable name\>
+For programs with multiple .cpp source files:<br/>
+$ compile -m<br/>
+You will then be prompted to enter the name of the executable file if all compilations are successful
