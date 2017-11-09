@@ -1,91 +1,120 @@
 #!/bin/bash
 
-case $# in
-  0) echo "Parameters not recognized, type compile --help for help";;
-  1) FILE=$1;;
-  2) FILE=$1; EXE=$2;;
-  *) echo "Parameters not recognized, type compile --help for help";;
-esac
-
-NAME=${FILE%.*}    #removes the extension using shell parameter expansion
+version="0.0.1"
 
 ###############################################################################
 
 #function to list all the paths of the subdirectory
+
 function listCPPFiles {
-	for i in $(find -type f)
-	do
-		if [ "${i##*.}" = "cpp" ]
-		then
-			echo "$i"
-		fi
-	done
+		for i in $(find -type f)
+		do
+				case "${i##*.}" in
+						"c")   echo "$i";;
+						"cpp") echo "$i";;
+						"C")   echo "$i";;
+				esac
+		done
 }
 
 ###############################################################################
 
-if [ "$FILE" = "--help" ]
-then
+# function to generate object file of individual file
+
+function genObjFile {
+		if [ "${1##*.}" = "c" ]
+		then
+				gcc -c -pedantic "$1"
+
+		elif [ "${1##*.}" = "cpp" ] || [ "${1##*.}" = "C" ]
+		then
+				g++ -c -std=c++11 -pedantic "$1"
+		fi
+}
+
+###############################################################################
+
+# function to display help
+
+function usage {
   echo "Usage for single source file-"
 	echo "$ compile <filename with extension>"
   echo "Only for .c and .cpp files"
 	echo -e "\nFor multiple files even in nested directories-"
 	echo "$ compile -m"
 	echo "You'll then be prompted to enter the executable name once the compilation terminates successfully"
+}
 
-elif [ "${FILE##*.}" = "c" ]    #extension is .c
-then
-  gcc -c -pedantic $FILE -o temp.o
-  if [ "$?" = "0" ]    #compilation returns 0
-  then
-	  gcc temp.o -o $NAME
-		rm temp.o
-  else
-		echo "Unsuccessful compilation"
-  fi
+###############################################################################
 
-elif [ "${FILE##*.}" = "cpp" ] || [ "${FILE##*.}" = "C" ]    #extension is .cpp or .C
-then
-  g++ -c -pedantic -std=c++11 $FILE -o temp.o
-  if [ "$?" = "0" ]    #compilation returns 0
-  then
-		g++ temp.o -o $NAME
-		rm temp.o
-  else
-		echo "Unsuccessful compilation"
-		exit 1
-  fi
+# function to compile single source files
 
-elif [ "$FILE" = "-m" ]    #compile a code with multiple source files
-then
-  if [ ! -d "o-files" ]    #create a directory for the object files to reside in if one does not exist already
-  then
-		mkdir o-files
-  fi
-
-  for i in $(listCPPFiles)
-  do
-		echo "compiling $i"
-		g++ -c -pedantic -std=c++11 $i
-		if [ "$?" != "0" ]
+function compileFile {
+		name="${1%.*}"    #removes the extension using shell parameter expansion
+		
+		if [ "${1##*.}" = "c" ]    #extension is .c
 		then
-			echo "Unsuccessful compilation"
-			exit 1
+				(gcc -o "$name" "$1" -pedantic) || (echo "Compilation of $1 failed")
+				
+		elif [ "${1##*.}" = "cpp" ] || [ "${1##*.}" = "C" ]    #extension is .cpp or .C
+		then
+				g++ -o "$name" "$1" -pedantic -std=c++11 || (echo "Compilation of $1 failed")
 
+		else
+				echo "Invalid parameters- only for extensions c, cpp and C"
 		fi
-  done
+}
 
-  mv *.o o-files
-  cd o-files
+###############################################################################
 
-  if [ "$?" = "0" ]
-  then
-		echo "Enter the executable name"
-		read EXENAME
-		g++ `ls` -o $EXENAME
-		mv $EXENAME ..
-  fi
+
+
+while getopts "mvh*:" option
+do
+		case "$option" in
+				m) multi="1";; # flag for multiple source files
+				v) echo "$version" && exit 0;;
+				h) usage && exit 0;;
+		esac
+done
+
+
+if [[ "$#" == "0" ]]
+then
+		# should echo the help section when no arguments are passed
+		usage && exit 0
+
+elif [[ "$#" == "1" ]]
+then
+		if [[ "$multi" == "1" ]]
+		then
+				if [ ! -d "o-files" ]    #create a directory for the object files to reside in if one does not exist already
+				then
+						mkdir o-files
+				fi
+
+				for i in $(listCPPFiles)
+				do
+						echo "compiling $i"
+						genObjFile "$i" || exit 1
+				done
+
+				mv *.o o-files && cd o-files
+
+				if [ "$?" = "0" ]
+				then
+						echo "Enter the executable name"
+						read exeName
+						(g++ $(ls) -o $exeName) || exit 1
+						mv $exeName ..
+				fi
+				exit 0
+		fi
 
 else
-  echo "Invalid parameters. Type 'compile --help'"
+		for i in "${@}"
+		do
+				echo "Compiling $i"
+				compileFile "$i"
+		done
 fi
