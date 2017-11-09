@@ -6,10 +6,13 @@ $ gcc -c \<filename\>.c -o \<filename\>.o
 $ gcc \<filename\>.o -o \<executable name\>
 ```
 # Installation
-Clone the repository into a local directory<br/>
-Move the compile script into a directory in your $PATH environment (usually /usr/local/bin or /usr/bin is preferred)<br/>
-Now you can compile any c or c++ source file/files that you want!<br/>
-(An install script will be created in the future for this purpose)<br/>
+[Clone](https://help.github.com/articles/cloning-a-repository/) the repository into a local directory<br/>
+Change directories to the clone<br/>
+Run the install.sh file as root `$ sudo sh install.sh`<br/>
+
+# Uninstallation
+Change directories to the clone<br/>
+Run the uninstall.sh file as root `$ sudo sh uninstall.sh`<br/>
 
 # Usage
 For C or C++ source files:<br/>
