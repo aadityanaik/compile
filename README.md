@@ -1,5 +1,5 @@
 # compile
-A simple rudimentary bash script to compile single C and CPP source files as opposed to the normal
+A simple rudimentary bash script to compile single (or compile and link multiple) C and CPP source files as opposed to the normal
 ```
 $ gcc -c \<filename\>.c -o \<filename\>.o
 
