@@ -2,6 +2,8 @@
 
 version="0.0.1"
 
+flag="std=c++11"
+
 ################################################################################################################
 
 #function to list all the paths of the subdirectory
@@ -28,7 +30,7 @@ function genObjFile {
 
 	elif [ "${1##*.}" = "cpp" ] || [ "${1##*.}" = "C" ]
 	then
-		g++ -c -std=c++11 -pedantic "$1"
+		g++ -c -"$flag" -pedantic "$1"
 	fi
 }
 
@@ -58,7 +60,7 @@ function compileFile {
 				
 	elif [ "${1##*.}" = "cpp" ] || [ "${1##*.}" = "C" ]    #extension is .cpp or .C
 	then
-		(g++ -o "$name" "$1" -pedantic -std=c++11) || (echo "Compilation of $1 failed")
+		(g++ -o "$name" "$1" -pedantic -"$flag") || (echo "Compilation of $1 failed")
 
 	else
 		echo "Invalid parameters- only for extensions c, cpp and C"
@@ -69,12 +71,15 @@ function compileFile {
 
 
 
-while getopts "mvh*:" option
+while getopts "mvhf:*:" option
 do
 	case "$option" in
 		m) multi="1";; # flag for multiple source files
 		v) echo "$version" && exit 0;;
 		h) usage && exit 0;;
+    f) 
+    flag="$OPTARG"
+    shift "$((OPTIND - 1))";;
 	esac
 done
 
@@ -95,7 +100,7 @@ then
 
 		for i in $(listCPPFiles)
 		do
-			echo "compiling $i"
+			echo "Compiling $i"
 			genObjFile "$i" || exit 1
 		done
 
@@ -109,6 +114,10 @@ then
 			mv $exeName ..
 		fi
 		exit 0
+
+  else
+    echo "Compiling $1"
+		compileFile "$1"
 	fi
 
 else
