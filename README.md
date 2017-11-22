@@ -24,7 +24,7 @@ You will then be prompted to enter the name of the executable file if all compil
 
 For compiling multiple standalone files (either .c or .cpp or .C):<br/>
 `$ compile <file1> <file2> <file3>`...<br/>
-Each file will be created with the executable of the same name.
+Each file will be compiled to generate executables of the same name.
 
 # Note
 It is imperative to enter the file name with the extension. Otherwise the script will return an error.
